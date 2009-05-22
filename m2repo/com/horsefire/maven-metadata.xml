@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <plugins>
+    <plugin>
+      <name>GwtAMP Plugin</name>
+      <prefix>gwtamp</prefix>
+      <artifactId>gwtamp-plugin</artifactId>
+    </plugin>
+  </plugins>
+</metadata>

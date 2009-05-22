@@ -1,0 +1,59 @@
+#summary A quick guide on using gwtamp
+#labels Featured
+
+= Introduction =
+
+These instructions will get you started with GwtAMP quickly.
+
+
+= Requirements =
+
+You'll need maven installed on your computer, as 90% of the worth of gwtamp is the maven plugins that compile the php and sql for you. And if you've got maven, you obviously have a jdk installed, so you're all set.
+
+= Basic instructions =
+
+To use gwtamp, you need to do the following things (I'll describe these in detail below):
+  * Create a maven project
+  * Add GwtAMP as a dependency to your pom file
+  * Create a GWT module that extends the GwtAMP module
+  * Subclass the DataSource class for each record or database table you want
+  * Create a class that implements the DataSourceBundle class
+  * Add a configuration to your pom for gwtamp-plugin that specifies:
+    * The full gwt package name
+    * The full package name for the DataSourceBundle implementation
+
+= Detailed instructions =
+
+For most of this section, I will refer to the ContactDB sample project as an example.
+
+== Add GwtAMP as a dependency to your project ==
+
+Blah blah blah
+
+== Create a GWT module that extends the GwtAMP module ==
+
+I assume you already know how to create a GWT module. Just add the following line to your MyModule.gwt.xml file:
+
+<extends something>
+
+== Subclass the DataSource class for each record or database table you want ==
+
+Think of your data model. For each record type you want (in ContactDB, this is Person and Field), create a class that extends *com.horsefire.gwtamp.client.DataSource*. I usually make private constructor and use a static factory method, so I can build the field list ahead of time. See *com.horsefire.contactdb.client.PeopleDataSource* for an example.
+
+Make sure your class does not directly reference any GWT code. The plugin will instantiate this class, and so it can't contain any code that will not run outside of hosted mode. This is why the WaitDialog that the constructor asks for is an interface, not a real class, so you can pass in the stub when constructing it server-side.
+
+== Create a class that implements the DataSourceBundle class ==
+
+Create a class that implements the DataSourceBundle class. I usually use this class to instantiate my DataSource subclasses in my code, but at the least, it's required for the plugin.
+
+Make sure that your implementation has a default constructor that will create non-gwt-hosted-mode versions of your DataSource subclasses. Also, read the comments in the DataSourceBundle class about the required order of the DataSource subclasses returned from getDataSources().
+
+== Configuration the gwtamp-plugin in your pom ==
+
+Add the following section so that maven can find the plugin on the repository here:
+
+blah blah
+
+Then add the following plugin config:
+    * The full gwt package name
+    * The full package name for the DataSourceBundle implementation

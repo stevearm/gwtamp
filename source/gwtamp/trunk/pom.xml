@@ -3,14 +3,14 @@
 	<groupId>com.horsefire</groupId>
 	<artifactId>gwtamp</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>GwtAMP</name>
 	<description>A toolkit to easily bootstrap GWT applications running on a LAMP backend</description>
 	<url>http://code.google.com/p/gwtamp/</url>
 	<scm>
-		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</connection>
-		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</developerConnection>
-		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</url>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.1</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.1</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.1</url>
 	</scm>
 
 	<properties>

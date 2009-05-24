@@ -1,0 +1,4 @@
+<module>
+	<inherits name='com.horsefire.gwtamp.GwtAmp' />
+	<entry-point class='com.horsefire.contactList.client.ContactList' />
+</module>

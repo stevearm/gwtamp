@@ -15,6 +15,7 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>com.horsefire</groupId>
 			<artifactId>gwtamp</artifactId>
@@ -30,6 +31,13 @@
 	</dependencies>
 
 	<build>
+
+		<!-- The source must be included so the GWT compiler can get at it -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+		</resources>
 
 		<plugins>
 

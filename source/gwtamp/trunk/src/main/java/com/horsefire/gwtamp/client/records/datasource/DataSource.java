@@ -75,6 +75,10 @@ public abstract class DataSource {
 		m_recordTitleKey = recordTitleKey;
 		m_pleaseWaitDialog = waitDialog;
 	}
+	
+	public String getName() {
+		return m_name;
+	}
 
 	private String getUrl() {
 		return GWT.getHostPageBaseURL() + BASE_URL + m_name + ".php";

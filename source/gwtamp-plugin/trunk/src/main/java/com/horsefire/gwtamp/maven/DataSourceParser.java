@@ -55,8 +55,6 @@ public class DataSourceParser {
 			MojoFailureException {
 		try {
 			final Class<?> dataSourceClass = DataSource.class;
-			Field nameField = dataSourceClass.getDeclaredField("m_name");
-			nameField.setAccessible(true);
 			Field dataListField = dataSourceClass
 					.getDeclaredField("m_dataFields");
 			dataListField.setAccessible(true);
@@ -65,7 +63,7 @@ public class DataSourceParser {
 			linkListField.setAccessible(true);
 
 			for (DataSource dataSource : m_classes) {
-				DbTable table = parseDataSource(dataSource, nameField,
+				DbTable table = parseDataSource(dataSource, 
 						dataListField, linkListField);
 				m_tables.add(table);
 				m_tableHash.put(dataSource, table);
@@ -86,12 +84,12 @@ public class DataSourceParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private DbTable parseDataSource(DataSource dataSource, Field nameField,
+	private DbTable parseDataSource(DataSource dataSource, 
 			Field dataListField, Field linkListField)
 			throws IllegalArgumentException, IllegalAccessException,
 			MojoFailureException {
 		DbTable table = new DbTable();
-		table.name = (String) nameField.get(dataSource);
+		table.name = dataSource.getName();
 		table.dbName = m_tablePrefix + '_' + table.name;
 		table.dataFields = (List<DataField>) dataListField.get(dataSource);
 		table.linkFields = new ArrayList<DbLinkField>();

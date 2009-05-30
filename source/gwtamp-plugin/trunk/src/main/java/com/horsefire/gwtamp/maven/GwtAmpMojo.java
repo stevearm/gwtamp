@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.execution.MavenSession;
@@ -21,6 +23,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import com.horsefire.gwtamp.client.records.datasource.DataSource;
 import com.horsefire.gwtamp.client.records.datasource.DataSourceBundle;
+import com.horsefire.gwtamp.client.records.fields.Field;
 
 /**
  * @goal doEverything
@@ -141,6 +144,8 @@ public class GwtAmpMojo extends AbstractMojo {
 
 		DataSource[] dataSources = getDataSources();
 
+		verifyDataSourceUniqueness(dataSources);
+
 		new PhpCompiler(artifactOutputDir, dataSources, databaseTablePrefix)
 				.run();
 
@@ -173,6 +178,7 @@ public class GwtAmpMojo extends AbstractMojo {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private DataSource[] getDataSources() throws MojoExecutionException,
 			MojoFailureException {
 		List runtimeClasspathElements;
@@ -225,5 +231,31 @@ public class GwtAmpMojo extends AbstractMojo {
 		}
 
 		return bundle.getDataSources();
+	}
+
+	private void verifyDataSourceUniqueness(DataSource[] dataSources)
+			throws MojoFailureException {
+		final Set<String> dsNames = new HashSet<String>();
+		for (DataSource ds : dataSources) {
+			if (!dsNames.add(ds.getName())) {
+				throw new MojoFailureException(
+						"Duplicate name found for DataSources: " + ds.getName());
+			}
+			final Set<String> fieldNames = new HashSet<String>();
+			for (Field field : ds.getDataFields()) {
+				if (!fieldNames.add(field.getKey())) {
+					throw new MojoFailureException(
+							"Duplicate field name found in " + ds.getClass()
+									+ ": " + field.getKey());
+				}
+			}
+			for (Field field : ds.getLinkFields()) {
+				if (!fieldNames.add(field.getKey())) {
+					throw new MojoFailureException(
+							"Duplicate field name found in " + ds.getClass()
+									+ ": " + field.getKey());
+				}
+			}
+		}
 	}
 }

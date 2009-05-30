@@ -13,6 +13,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 
+import com.horsefire.gwtamp.client.GwtAmpRootPanel;
 import com.horsefire.gwtamp.server.FileList;
 
 public class HtmlGenerator {
@@ -54,6 +55,8 @@ public class HtmlGenerator {
 						line = replaceMatch(line, matcher, title);
 					} else if ("gwtModule".equals(matcher.group(1))) {
 						line = replaceMatch(line, matcher, module);
+					} else if ("rootPanelId".equals(matcher.group(1))) {
+						line = replaceMatch(line, matcher, GwtAmpRootPanel.DIV_ID);
 					} else {
 						throw new MojoExecutionException(
 								"Unknown variable in source index.html at line: "

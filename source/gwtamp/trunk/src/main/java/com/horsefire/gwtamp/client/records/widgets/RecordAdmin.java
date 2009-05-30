@@ -15,15 +15,9 @@ import com.horsefire.gwtamp.client.records.widgets.RecordList.RecordSelectionObs
 public class RecordAdmin extends Composite {
 
 	private final DataSource m_dataSource;
-	private final String m_displayField;
 
 	public RecordAdmin(DataSource dataSource) {
-		this(dataSource, null);
-	}
-
-	public RecordAdmin(DataSource dataSource, String preferredDisplayField) {
 		m_dataSource = dataSource;
-		m_displayField = preferredDisplayField;
 
 		final HorizontalPanel outerRow = new HorizontalPanel();
 		initWidget(outerRow);

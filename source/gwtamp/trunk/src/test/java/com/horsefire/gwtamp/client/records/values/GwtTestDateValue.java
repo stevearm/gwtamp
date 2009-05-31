@@ -5,16 +5,20 @@ import com.google.gwt.junit.client.GWTTestCase;
 public class GwtTestDateValue extends GWTTestCase {
 
 	public void testParse() {
-		DateValue dateValue = DateValue.parse("4/20/2009");
+		final String date = "4/20/2009";
+		final String seconds = "1240200000";
+		final int secondsInt = 1240200000;
+		DateValue dateValue = DateValue.parse(date);
 		assertEquals("Didn't convert string date into seconds properly",
 				1240200000, dateValue.get());
 		assertEquals("Didn't convert string date into json string properly",
-				"1240200000", dateValue.getJsonString());
-		dateValue = new DateValue(1240200000);
-		assertEquals("Didn't convert seconds into proper date", "4/20/2009",
-				dateValue.getUserString());
+				seconds, dateValue.getJsonString());
+		dateValue = new DateValue(secondsInt);
+		assertEquals("Didn't convert seconds into proper date", date, dateValue
+				.getUserString());
 		assertEquals("Didn't convert string date into json string properly",
-				"1240200000", dateValue.getJsonString());
+				seconds, dateValue.getJsonString());
+		fail();
 	}
 
 	public void testFailure() {
@@ -23,6 +27,6 @@ public class GwtTestDateValue extends GWTTestCase {
 
 	@Override
 	public String getModuleName() {
-		return "com.speedyserve.gwtamp.GwtAmp";
+		return "com.horsefire.gwtamp.GwtAmp";
 	}
 }

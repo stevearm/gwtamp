@@ -3,14 +3,14 @@
 	<groupId>com.horsefire</groupId>
 	<artifactId>simple-gwt-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Simple GWT Plugin</name>
 	<description>A simple GWT compile and test plugin</description>
 	<url>http://code.google.com/p/gwtamp/</url>
 	<scm>
-		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</connection>
-		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</developerConnection>
-		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</url>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/tags/simple-gwt-plugin-0.0.1</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/tags/simple-gwt-plugin-0.0.1</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/tags/simple-gwt-plugin-0.0.1</url>
 	</scm>
 
 	<properties>

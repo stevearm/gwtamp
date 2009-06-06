@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.horsefire</groupId>
+	<artifactId>simple-gwt-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Simple GWT Plugin</name>
+	<description>A simple GWT compile and test plugin</description>
+	<url>http://code.google.com/p/gwtamp/</url>
+	<scm>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/simple-gwt-plugin/trunk</url>
+	</scm>
+
+	<properties>
+		<gwt.version>1.5.3</gwt.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.3.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<version>1.8</version>
+			</extension>
+		</extensions>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>googlecode</id>
+			<url>svn:https://gwtamp.googlecode.com/svn/m2repo</url>
+		</repository>
+	</distributionManagement>
+
+</project>

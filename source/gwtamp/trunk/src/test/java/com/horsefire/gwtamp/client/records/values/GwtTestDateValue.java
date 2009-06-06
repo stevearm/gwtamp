@@ -1,8 +1,8 @@
 package com.horsefire.gwtamp.client.records.values;
 
-import com.google.gwt.junit.client.GWTTestCase;
+import com.horsefire.gwtamp.client.AbstractGwtTestCase;
 
-public class GwtTestDateValue extends GWTTestCase {
+public class GwtTestDateValue extends AbstractGwtTestCase {
 
 	public void testParse() {
 		final String date = "4/20/2009";
@@ -18,15 +18,5 @@ public class GwtTestDateValue extends GWTTestCase {
 				.getUserString());
 		assertEquals("Didn't convert string date into json string properly",
 				seconds, dateValue.getJsonString());
-		fail();
-	}
-
-	public void testFailure() {
-		fail();
-	}
-
-	@Override
-	public String getModuleName() {
-		return "com.horsefire.gwtamp.GwtAmp";
 	}
 }

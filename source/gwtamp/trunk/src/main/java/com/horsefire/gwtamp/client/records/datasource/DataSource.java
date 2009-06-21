@@ -43,6 +43,13 @@ public abstract class DataSource {
 	private final RpcClient m_rpcClient;
 
 	protected DataSource(String name, List<DataField> dataFields,
+			List<LinkField> linkFields, String keyForNameField,
+			PleaseWaitDialog waitDialog, RpcClient rpcClient) {
+		this(name, dataFields, linkFields, new RecordParser(keyForNameField,
+				dataFields, linkFields), waitDialog, rpcClient);
+	}
+
+	DataSource(String name, List<DataField> dataFields,
 			List<LinkField> linkFields, RecordParser parser,
 			PleaseWaitDialog waitDialog, RpcClient rpcClient) {
 		m_name = name;

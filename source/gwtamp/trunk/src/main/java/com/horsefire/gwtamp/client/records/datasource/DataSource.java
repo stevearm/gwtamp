@@ -2,26 +2,22 @@ package com.horsefire.gwtamp.client.records.datasource;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
 import com.horsefire.gwtamp.client.records.Record;
+import com.horsefire.gwtamp.client.records.RecordParsingException;
 import com.horsefire.gwtamp.client.records.fields.DataField;
 import com.horsefire.gwtamp.client.records.fields.LinkField;
-import com.horsefire.gwtamp.client.records.values.DataValue;
 import com.horsefire.gwtamp.client.records.values.LinkValue;
-import com.horsefire.gwtamp.client.util.Log;
+import com.horsefire.gwtamp.client.rpc.RpcCallback;
+import com.horsefire.gwtamp.client.rpc.RpcClient;
+import com.horsefire.gwtamp.client.rpc.RpcResponse;
 import com.horsefire.gwtamp.client.widgets.PleaseWaitDialog;
 
 public abstract class DataSource {
@@ -32,35 +28,23 @@ public abstract class DataSource {
 		void dataSourceChange();
 	}
 
-	private class ResponseBean {
-		public int responseCode;
-		public String message;
-		public Collection<Record> records;
-	}
-
-	private static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
-	private static final String CONTENT_TYPE = "Content-type";
-
 	private static final String PARAM_OPERATION_TYPE = "_operationType";
 	private static final String VALUE_FETCH = "fetch";
 	private static final String VALUE_UPDATE = "update";
 	private static final String VALUE_ADD = "add";
 	private static final String VALUE_REMOVE = "remove";
 
-	private static final String JSON_RECORD_KEY_DATA = "data";
-	private static final String JSON_RECORD_KEY_LINKS = "links";
-
-	private final ResponseParser m_responseParser = new ResponseParser();
 	private final Set<ChangeObserver> m_observers = new HashSet<ChangeObserver>();
 	private final String m_name;
 	private final List<DataField> m_dataFields;
 	private final List<LinkField> m_linkFields;
-	private final String m_recordTitleKey;
 	private final PleaseWaitDialog m_pleaseWaitDialog;
+	private final RecordParser m_recordParser;
+	private final RpcClient m_rpcClient;
 
 	protected DataSource(String name, List<DataField> dataFields,
-			List<LinkField> linkFields, String recordTitleKey,
-			PleaseWaitDialog waitDialog) {
+			List<LinkField> linkFields, RecordParser parser,
+			PleaseWaitDialog waitDialog, RpcClient rpcClient) {
 		m_name = name;
 		if (dataFields == null) {
 			m_dataFields = new ArrayList<DataField>();
@@ -72,11 +56,12 @@ public abstract class DataSource {
 		} else {
 			m_linkFields = linkFields;
 		}
-		m_recordTitleKey = recordTitleKey;
+		m_recordParser = parser;
 		m_pleaseWaitDialog = waitDialog;
+		m_rpcClient = rpcClient;
 	}
-	
-	public String getName() {
+
+	public final String getName() {
 		return m_name;
 	}
 
@@ -86,163 +71,64 @@ public abstract class DataSource {
 
 	public final void getRecord(final int id,
 			final SingleRecordCallback callback) {
+		m_pleaseWaitDialog.show("Getting record");
 		final String url = getUrl() + '?' + PARAM_OPERATION_TYPE + '='
 				+ VALUE_FETCH + "&id=" + id;
 
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		final RequestCallback requestCallback = new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
-				callback.error("Error refreshing records", exception);
-			}
-
-			public void onResponseReceived(Request request, Response response) {
-				if (response.getStatusCode() != 200) {
-					callback.error("Got a " + response.getStatusCode()
-							+ " response getting record " + id, null);
-				} else {
-					ResponseBean responseBean = getResponse(response.getText());
-					if (responseBean != null && responseBean.records != null) {
-						if (responseBean.records.size() == 0) {
-							callback.gotRecord(null);
-						} else if (responseBean.records.size() == 1) {
-							callback.gotRecord(responseBean.records.iterator()
-									.next());
-						} else {
-							callback.error("Somehow got multiple cards for id="
-									+ id, null);
-						}
+		m_rpcClient.doGet(url, new RpcCallback() {
+			public void response(RpcResponse response) {
+				if (response.getResponseCode() == RpcResponse.STATUS_SUCCESS) {
+					JSONArray data = response.getData();
+					if (data.size() == 0) {
+						callback.error("No records found", null);
+					} else if (data.size() > 1) {
+						callback.error("Somehow got multiple records", null);
 					} else {
-						callback.error("Couldn't parse records", null);
+						try {
+							List<Record> records = m_recordParser
+									.parseRecords(data);
+							callback.gotRecord(records.get(0));
+						} catch (RecordParsingException e) {
+							callback.error("Unreadable record", e);
+						}
 					}
+				} else {
+					callback.error("Error refreshing records", null);
 				}
+				m_pleaseWaitDialog.hide();
 			}
-		};
-		try {
-			builder.sendRequest("", requestCallback);
-		} catch (RequestException e) {
-			callback.error("Problem sending request to refresh records", e);
-		}
+		});
 	}
 
 	public final void getRecords(final MultipleRecordCallback callback) {
 		final String url = getUrl() + '?' + PARAM_OPERATION_TYPE + '='
 				+ VALUE_FETCH;
 
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		final RequestCallback requestCallback = new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
-				callback.error("Error refreshing records", exception);
-			}
-
-			public void onResponseReceived(Request request, Response response) {
-				if (response.getStatusCode() != 200) {
-					callback.error("Got a " + response.getStatusCode()
-							+ " response getting records", null);
+		m_pleaseWaitDialog.show("Getting records");
+		m_rpcClient.doGet(url, new RpcCallback() {
+			public void response(RpcResponse response) {
+				if (response.getResponseCode() != RpcResponse.STATUS_SUCCESS) {
+					callback.error("Error refreshing records", null);
 				} else {
-					ResponseBean responseBean = getResponse(response.getText());
-					if (responseBean != null && responseBean.records != null) {
-						callback.gotRecords(responseBean.records);
-					} else {
-						callback.error("Couldn't parse records", null);
+					try {
+						List<Record> records = m_recordParser
+								.parseRecords(response.getData());
+						callback.gotRecords(records);
+					} catch (RecordParsingException e) {
+						callback.error("Unreadable records", e);
 					}
 				}
+				m_pleaseWaitDialog.hide();
 			}
-		};
-		try {
-			builder.sendRequest("", requestCallback);
-		} catch (RequestException e) {
-			callback.error("Problem sending request to refresh records", e);
-		}
+		});
 	}
 
-	private Record parseRecord(JSONObject record) {
-		if (record == null) {
-			Log.error("record is null");
-			return null;
-		}
-		Record parsedRecord = createRecord();
-
-		JSONValue value = record.get(Record.KEY_ID);
-		if (value == null) {
-			Log.error("id is null in response: " + record);
-			return null;
-		}
-		parsedRecord.setId(Integer.parseInt(value.isNumber().toString()));
-
-		value = record.get(JSON_RECORD_KEY_DATA);
-		if (value == null) {
-			Log.error("data is null in response: " + record);
-			return null;
-		}
-		parseData(parsedRecord, value.isObject());
-
-		value = record.get(JSON_RECORD_KEY_LINKS);
-		if (value == null) {
-			Log.error("links is null in response: " + record);
-			return null;
-		}
-		parseLinks(parsedRecord, value.isObject());
-
-		return parsedRecord;
-	}
-
-	private void parseData(Record record, JSONObject object) {
-		for (DataField field : m_dataFields) {
-			JSONValue jsonValue = object.get(field.getKey());
-			if (jsonValue != null) {
-				DataValue value = field.createValue(jsonValue);
-				if (value != null) {
-					record.setDataValue(field.getKey(), value);
-				}
-			}
-		}
-	}
-
-	private void parseLinks(Record record, JSONObject object) {
-		for (LinkField field : m_linkFields) {
-			JSONValue jsonValue = object.get(field.getKey());
-			if (jsonValue != null) {
-				LinkValue value = field.createValue(jsonValue);
-				if (value != null) {
-					record.setLinkId(field.getKey(), value);
-				}
-			}
-		}
-	}
-
-	private ResponseBean getResponse(String response) {
-		ResponseParser.ResponseBean jsonResponseBean = m_responseParser
-				.getResponse(response);
-		if (jsonResponseBean == null) {
-			return null;
-		}
-
-		ResponseBean responseBean = new ResponseBean();
-		responseBean.responseCode = jsonResponseBean.responseCode;
-		responseBean.message = jsonResponseBean.message;
-
-		if (responseBean.responseCode == 0) {
-			JSONValue tempValue = jsonResponseBean.dataValue;
-			if (tempValue.isArray() == null) {
-				Log.error("Response code was 0 but 'data' wasn't an array");
-				return null;
-			}
-			responseBean.records = new ArrayList<Record>();
-			JSONArray dataArray = tempValue.isArray();
-			for (int i = 0; i < dataArray.size(); i++) {
-				JSONValue value = dataArray.get(i);
-				if (value.isObject() == null) {
-					Log.error("Data item isn't an object: " + value);
-				} else {
-					Record record = parseRecord(value.isObject());
-					if (record != null) {
-						responseBean.records.add(record);
-					}
-				}
-			}
-		}
-
-		return responseBean;
+	public final void addRecord(Collection<Change> values,
+			SingleRecordCallback callback) {
+		m_pleaseWaitDialog.show("Adding record");
+		final String url = getUrl() + "?" + PARAM_OPERATION_TYPE + "="
+				+ VALUE_ADD;
+		addSaveRecord(url, values, callback);
 	}
 
 	public final void saveRecord(final Record record,
@@ -255,93 +141,53 @@ public abstract class DataSource {
 
 	private void addSaveRecord(final String url,
 			final Collection<Change> values, final SingleRecordCallback callback) {
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
-		final RequestCallback requestCallback = new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
-				m_pleaseWaitDialog.hide();
-				callback.error("Error adding/saving record", exception);
-			}
-
-			public void onResponseReceived(Request request, Response response) {
-				m_pleaseWaitDialog.hide();
-				if (response.getStatusCode() != 200) {
-					callback.error("Got a " + response.getStatusCode()
-							+ " response adding/saving record", null);
-					return;
-				}
-				ResponseBean responseBean = getResponse(response.getText());
-				if (responseBean != null && responseBean.records != null
-						&& responseBean.records.size() > 0) {
-					callback.gotRecord(responseBean.records.iterator().next());
-					notifyObservers();
-				} else {
-					callback.error("Can't decode add/save response: "
-							+ response.getText(), null);
-				}
-			}
-		};
-		StringBuilder postBody = new StringBuilder();
-		boolean first = true;
+		Map<String, String> postBody = new HashMap<String, String>();
 		for (Change change : values) {
-			if (change != null) {
-				if (first) {
-					first = false;
+			postBody.put(change.key, change.value.getJsonString());
+		}
+		m_rpcClient.doPost(url, postBody, new RpcCallback() {
+			public void response(RpcResponse response) {
+				if (response.getResponseCode() != RpcResponse.STATUS_SUCCESS) {
+					callback.error("Error saving record", null);
 				} else {
-					postBody.append('&');
+					JSONArray data = response.getData();
+					if (data.size() == 0) {
+						callback.error("No records found", null);
+					} else if (data.size() > 1) {
+						callback.error("Somehow got multiple records", null);
+					} else {
+						try {
+							List<Record> records = m_recordParser
+									.parseRecords(data);
+							callback.gotRecord(records.get(0));
+							notifyObservers();
+						} catch (RecordParsingException e) {
+							callback.error("Unreadable record", e);
+						}
+					}
+					m_pleaseWaitDialog.hide();
 				}
-				postBody.append(URL.encode(change.key)).append('=').append(
-						URL.encode(change.value.getJsonString()));
 			}
-		}
-		try {
-			builder.setHeader(CONTENT_TYPE, APPLICATION_X_WWW_FORM_URLENCODED);
-			builder.sendRequest(postBody.toString(), requestCallback);
-		} catch (RequestException e) {
-			m_pleaseWaitDialog.hide();
-			callback.error("Problem sending request to refresh records", e);
-			notifyObservers();
-		}
+		});
 	}
 
 	public final void deleteRecord(final Record record,
 			final PlainCallback callback) {
 		final String url = getUrl() + "?" + PARAM_OPERATION_TYPE + "="
 				+ VALUE_REMOVE + "&" + Record.KEY_ID + "=" + record.getId();
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		final RequestCallback requestCallback = new RequestCallback() {
-			public void onError(Request request, Throwable exception) {
-				m_pleaseWaitDialog.hide();
-				callback.error("Error deleting record", exception);
-			}
-
-			public void onResponseReceived(Request request, Response response) {
-				m_pleaseWaitDialog.hide();
-				if (response.getStatusCode() == 200) {
+		m_pleaseWaitDialog.show("Deleting record");
+		m_rpcClient.doGet(url, new RpcCallback() {
+			public void response(RpcResponse response) {
+				if (response.getResponseCode() != RpcResponse.STATUS_SUCCESS) {
+					callback.error("Error saving record", null);
+					callback.error("Error deleting record", null);
+				} else {
 					callback.success();
 					notifyObservers();
-				} else {
-					callback.error("Got a " + response.getStatusCode()
-							+ " response deleting record", null);
 				}
+				m_pleaseWaitDialog.hide();
 			}
-		};
-		try {
-			m_pleaseWaitDialog.show("Deleting record");
-			builder.setHeader(CONTENT_TYPE, APPLICATION_X_WWW_FORM_URLENCODED);
-			builder.sendRequest("", requestCallback);
-		} catch (RequestException e) {
-			m_pleaseWaitDialog.hide();
-			callback.error("Problem sending request to refresh records", e);
-			notifyObservers();
-		}
-	}
-
-	public final void addRecord(Collection<Change> values,
-			SingleRecordCallback callback) {
-		m_pleaseWaitDialog.show("Adding record");
-		final String url = getUrl() + "?" + PARAM_OPERATION_TYPE + "="
-				+ VALUE_ADD;
-		addSaveRecord(url, values, callback);
+		});
 	}
 
 	public final List<DataField> getDataFields() {
@@ -364,10 +210,6 @@ public abstract class DataSource {
 		for (ChangeObserver o : m_observers) {
 			o.dataSourceChange();
 		}
-	}
-
-	protected final Record createRecord() {
-		return new Record(m_recordTitleKey);
 	}
 
 	public final void getRecordsLinkedToRecord(final String linkKey,

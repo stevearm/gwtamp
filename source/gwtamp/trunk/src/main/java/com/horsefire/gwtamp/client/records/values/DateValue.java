@@ -25,9 +25,6 @@ public class DateValue extends IntegerValue {
 	}
 
 	public static DateValue parse(String value) {
-		if (value == null || value.isEmpty()) {
-			return new DateValue(new Date().getTime() / MILLIS_PER_SECOND);
-		}
 		try {
 			Date parse = getFormat().parse(value);
 			return new DateValue(parse.getTime() / MILLIS_PER_SECOND);
@@ -35,6 +32,14 @@ public class DateValue extends IntegerValue {
 			Log.debug("Can't parse string into date", e);
 		}
 		return null;
+	}
+
+	private static long getCurrentTimeSeconds() {
+		return new Date().getTime() / MILLIS_PER_SECOND;
+	}
+
+	public DateValue() {
+		this(getCurrentTimeSeconds());
 	}
 
 	public DateValue(long value) {

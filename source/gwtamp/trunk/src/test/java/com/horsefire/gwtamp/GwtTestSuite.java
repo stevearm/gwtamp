@@ -5,13 +5,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
-import com.horsefire.gwtamp.client.records.values.GwtTestDateValue;
 
 public class GwtTestSuite extends TestCase {
 
 	public static Test suite() {
 		TestSuite suite = new GWTTestSuite();
-		suite.addTestSuite(GwtTestDateValue.class);
+		suite.addTestSuite(com.horsefire.gwtamp.client.records.values.GwtTestDateValue.class);
+		suite.addTestSuite(com.horsefire.gwtamp.client.rpc.RpcResponseParserTestGwt.class);
+		suite.addTestSuite(com.horsefire.gwtamp.client.records.datasource.RecordParserTestGwt.class);
 		return suite;
 	}
 }

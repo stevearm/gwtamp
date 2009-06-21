@@ -63,7 +63,7 @@ public final class Record {
 		m_id = id;
 	}
 
-	public String getRecordTitle() {
+	public final String getRecordTitle() {
 		if (m_titleKey != null) {
 			DataValue dataValue = getDataValue(m_titleKey);
 			if (dataValue != null) {

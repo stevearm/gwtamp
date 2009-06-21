@@ -1,6 +1,7 @@
 package com.horsefire.gwtamp.client.records.fields;
 
 import com.google.gwt.json.client.JSONValue;
+import com.horsefire.gwtamp.client.records.RecordParsingException;
 import com.horsefire.gwtamp.client.records.values.DataValue;
 import com.horsefire.gwtamp.client.records.values.StringValue;
 
@@ -10,13 +11,12 @@ public class StringField extends DataField {
 
 	private final int m_maxLength;
 
-	public StringField(String key, boolean userVisible, String title) {
-		this(key, userVisible, title, MAX_LENGTH_DEFAULT);
+	public StringField(String key, String title) {
+		this(key, title, MAX_LENGTH_DEFAULT);
 	}
 
-	public StringField(String key, boolean userVisible, String title,
-			int maxLength) {
-		super(key, userVisible, title);
+	public StringField(String key, String title, int maxLength) {
+		super(key, title);
 		m_maxLength = maxLength;
 	}
 
@@ -25,7 +25,16 @@ public class StringField extends DataField {
 	}
 
 	@Override
-	public DataValue createValue(JSONValue value) {
+	public DataValue createValue(JSONValue value) throws RecordParsingException {
+		if (value == null || value.isString() == null) {
+			throw new RecordParsingException("Field '" + getKey()
+					+ "' must be a string");
+		}
 		return new StringValue(value.isString().stringValue());
+	}
+
+	@Override
+	public DataValue createDefaultValue() {
+		return new StringValue(null);
 	}
 }

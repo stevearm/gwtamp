@@ -20,9 +20,9 @@ if ($_REQUEST[LocalConstants::$PARAM_API_OPERATIONTYPE] == 'status') {
 
 function printStatus() {
 	if (isset($_SESSION[LocalConstants::$SESSION_USERNAME])) {
-		printGoodResponse('{"loggedIn":true,"username":"'.$_SESSION[LocalConstants::$SESSION_USERNAME].'"}');
+		printGoodResponse('[{"loggedIn":true,"username":"'.$_SESSION[LocalConstants::$SESSION_USERNAME].'"}]');
 	} else {
-		printGoodResponse('{"loggedIn":false}');
+		printGoodResponse('[{"loggedIn":false}]');
 	}
 }
 

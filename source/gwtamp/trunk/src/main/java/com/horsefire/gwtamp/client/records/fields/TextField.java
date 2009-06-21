@@ -6,7 +6,7 @@ package com.horsefire.gwtamp.client.records.fields;
  */
 public class TextField extends StringField {
 
-	public TextField(String key, boolean userVisible, String title) {
-		super(key, userVisible, title);
+	public TextField(String key, String title) {
+		super(key, title);
 	}
 }

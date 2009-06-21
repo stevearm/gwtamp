@@ -121,16 +121,14 @@ public class EditForm extends Composite {
 
 		int i = 0;
 		for (DataField field : m_dataFields) {
-			if (field.isUserVisible()) {
-				table.setWidget(i, 0, new Label(field.getTitle()));
-				DataValue value = null;
-				if (record != null) {
-					value = record.getDataValue(field.getKey());
-				}
-				EditField editField = renderField(field, value);
-				table.setWidget(i, 1, editField);
-				i++;
+			table.setWidget(i, 0, new Label(field.getTitle()));
+			DataValue value = null;
+			if (record != null) {
+				value = record.getDataValue(field.getKey());
 			}
+			EditField editField = renderField(field, value);
+			table.setWidget(i, 1, editField);
+			i++;
 		}
 		for (LinkField field : m_linkFields) {
 			table.setWidget(i, 0, new Label(field.getTitle()));

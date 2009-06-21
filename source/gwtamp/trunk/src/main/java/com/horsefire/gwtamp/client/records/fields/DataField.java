@@ -1,20 +1,29 @@
 package com.horsefire.gwtamp.client.records.fields;
 
 import com.google.gwt.json.client.JSONValue;
+import com.horsefire.gwtamp.client.records.RecordParsingException;
 import com.horsefire.gwtamp.client.records.values.DataValue;
 
 public abstract class DataField extends Field {
 
-	private final boolean m_userVisible;
-
-	protected DataField(String key, boolean userVisible, String title) {
+	protected DataField(String key, String title) {
 		super(key, title);
-		m_userVisible = userVisible;
 	}
 
+	@Deprecated
 	public final boolean isUserVisible() {
-		return m_userVisible;
+		return true;
 	}
 
-	public abstract DataValue createValue(JSONValue value);
+	/**
+	 * @param value
+	 *            Source data to parse from
+	 * @return Parsed value, never null
+	 * @throws RecordParsingException
+	 *             if value can't be parsed properly
+	 */
+	public abstract DataValue createValue(JSONValue value)
+			throws RecordParsingException;
+
+	public abstract DataValue createDefaultValue();
 }

@@ -25,10 +25,10 @@ import com.horsefire.gwtamp.client.records.datasource.DataSourceBundle;
 import com.horsefire.gwtamp.client.records.fields.Field;
 
 /**
- * @goal package
+ * @goal test
  * @requiresDependencyResolution runtime
  */
-public class GwtAmpMojo extends AbstractMojo {
+public class GwtAmpTestMojo extends AbstractMojo {
 
 	/**
 	 * Main GWT module
@@ -39,26 +39,12 @@ public class GwtAmpMojo extends AbstractMojo {
 	private String gwtModule;
 
 	/**
-	 * Class that implements DataSourceBundle
+	 * Gwt test suite
 	 * 
 	 * @parameter
 	 * @required
 	 */
-	private String dataSourceBundle;
-
-	/**
-	 * Array of extra GWT module
-	 * 
-	 * @parameter
-	 */
-	private String[] extraGwtModules;
-
-	/**
-	 * Database table prefix
-	 * 
-	 * @parameter expression="${project.artifactId}"
-	 */
-	private String databaseTablePrefix;
+	private String gwtTestSuite;
 
 	/**
 	 * Gwt version. Just use a single property for this and your dependency
@@ -84,36 +70,6 @@ public class GwtAmpMojo extends AbstractMojo {
 	private MavenProject project;
 
 	/**
-	 * Project version
-	 * 
-	 * @parameter expression="${project.version}"
-	 * @required
-	 * @readonly
-	 */
-	private String projectVersion;
-
-	/**
-	 * @parameter expression="${project.build.finalName}"
-	 * @required
-	 * @readonly
-	 */
-	private String artifactName;
-
-	/**
-	 * @parameter expression="${basedir}/target/${project.build.finalName}"
-	 * @required
-	 * @readonly
-	 */
-	private File artifactOutputDir;
-
-	/**
-	 * @parameter expression="${basedir}/target/sql"
-	 * @required
-	 * @readonly
-	 */
-	private File sqlOutputDir;
-
-	/**
 	 * @parameter expression="${basedir}"
 	 * @required
 	 * @readonly
@@ -123,6 +79,7 @@ public class GwtAmpMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (extraGwtModules == null) {
 			extraGwtModules = new String[0];
+			return;
 		}
 
 		ensureOutputDir(artifactOutputDir);

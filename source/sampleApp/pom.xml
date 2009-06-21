@@ -10,7 +10,7 @@
 	<url>http://code.google.com/p/gwtamp/</url>
 
 	<properties>
-		<gwtamp.version>0.0.1</gwtamp.version>
+		<gwtamp.version>0.0.2-SNAPSHOT</gwtamp.version>
 		<gwt.version>1.5.3</gwt.version>
 	</properties>
 
@@ -26,6 +26,14 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
+		</dependency>
+		
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -54,16 +62,46 @@
 				<groupId>com.horsefire</groupId>
 				<artifactId>gwtamp-plugin</artifactId>
 				<version>${gwtamp.version}</version>
+				<configuration>
+					<gwtModule>com.horsefire.contactList.ContactList</gwtModule>
+					<dataSourceBundle>com.horsefire.contactList.client.DataSourceBundle</dataSourceBundle>
+				</configuration>
 				<executions>
 					<execution>
-						<configuration>
-							<gwtModule>com.horsefire.contactList.ContactList</gwtModule>
-							<dataSourceBundle>com.horsefire.contactList.client.DataSourceBundle</dataSourceBundle>
-							<databaseTablePrefix>contactList</databaseTablePrefix>
-						</configuration>
+						<id>testing</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>assembling</id>
 						<phase>package</phase>
 						<goals>
-							<goal>doEverything</goal>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.horsefire</groupId>
+				<artifactId>simple-gwt-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<gwtModules>
+						<param>com.horsefire.contactList.ContactList</param>
+					</gwtModules>
+					<gwtTestSuites>
+						<param>com.horsefire.contactList.GwtTestSuite</param>
+					</gwtTestSuites>
+				</configuration>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
 						</goals>
 					</execution>
 				</executions>

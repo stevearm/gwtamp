@@ -7,6 +7,7 @@ import com.horsefire.gwtamp.client.records.datasource.DataSource;
 import com.horsefire.gwtamp.client.records.fields.DataField;
 import com.horsefire.gwtamp.client.records.fields.LinkField;
 import com.horsefire.gwtamp.client.records.fields.StringField;
+import com.horsefire.gwtamp.client.rpc.RpcClient;
 import com.horsefire.gwtamp.client.widgets.PleaseWaitDialog;
 
 public class PhoneNumberDataSource extends DataSource {
@@ -19,10 +20,9 @@ public class PhoneNumberDataSource extends DataSource {
 	public static PhoneNumberDataSource create(ContactDataSource contactDS,
 			PleaseWaitDialog dialog) {
 		List<DataField> dataFields = new ArrayList<DataField>();
-		dataFields.add(new StringField(KEY_DATA_TYPE, true,
+		dataFields.add(new StringField(KEY_DATA_TYPE,
 				"Number type (home, cell)"));
-		dataFields.add(new StringField(KEY_DATA_NUMBER, true, "Phone number",
-				14));
+		dataFields.add(new StringField(KEY_DATA_NUMBER, "Phone number", 14));
 
 		List<LinkField> linkFields = new ArrayList<LinkField>();
 		linkFields.add(new LinkField(KEY_LINK_CONTACTID, "Contact", contactDS));
@@ -33,7 +33,7 @@ public class PhoneNumberDataSource extends DataSource {
 	protected PhoneNumberDataSource(List<DataField> dataFields,
 			List<LinkField> linkFields, PleaseWaitDialog waitDialog) {
 		super("phonenumbers", dataFields, linkFields, KEY_DATA_NUMBER,
-				waitDialog);
+				waitDialog, new RpcClient());
 	}
 
 }

@@ -12,6 +12,7 @@
 	<properties>
 		<gwtamp.version>0.0.2-SNAPSHOT</gwtamp.version>
 		<gwt.version>1.5.3</gwt.version>
+				
 	</properties>
 
 	<dependencies>
@@ -19,7 +20,7 @@
 		<dependency>
 			<groupId>com.horsefire</groupId>
 			<artifactId>gwtamp</artifactId>
-			<version>${gwtamp.version}</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -68,17 +69,10 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>testing</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>assembling</id>
 						<phase>package</phase>
 						<goals>
-							<goal>assemble</goal>
+							<goal>package</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -87,7 +81,7 @@
 			<plugin>
 				<groupId>com.horsefire</groupId>
 				<artifactId>simple-gwt-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>0.0.2-SNAPSHOT</version>
 				<configuration>
 					<gwtModules>
 						<param>com.horsefire.contactList.ContactList</param>
@@ -102,6 +96,13 @@
 						<phase>compile</phase>
 						<goals>
 							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>

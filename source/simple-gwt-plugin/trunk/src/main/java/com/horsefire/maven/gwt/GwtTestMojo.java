@@ -66,7 +66,6 @@ public class GwtTestMojo extends AbstractMojo {
 		}
 		final String command = getGwtClasspath() + " junit.textui.TestRunner ";
 
-		// getLog().error("Classpath = " + command);
 		final Runtime runtime = Runtime.getRuntime();
 		for (String module : gwtTestSuites) {
 			try {

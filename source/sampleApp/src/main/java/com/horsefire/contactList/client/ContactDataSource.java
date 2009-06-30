@@ -6,6 +6,7 @@ import java.util.List;
 import com.horsefire.gwtamp.client.records.datasource.DataSource;
 import com.horsefire.gwtamp.client.records.fields.DataField;
 import com.horsefire.gwtamp.client.records.fields.DateField;
+import com.horsefire.gwtamp.client.records.fields.LinkField;
 import com.horsefire.gwtamp.client.records.fields.StringField;
 import com.horsefire.gwtamp.client.rpc.RpcClient;
 import com.horsefire.gwtamp.client.widgets.PleaseWaitDialog;
@@ -25,7 +26,7 @@ public class ContactDataSource extends DataSource {
 
 	protected ContactDataSource(List<DataField> dataFields,
 			PleaseWaitDialog waitDialog) {
-		super("contacts", dataFields, null, KEY_DATA_NAME, waitDialog,
-				new RpcClient());
+		super("contacts", dataFields, new ArrayList<LinkField>(),
+				KEY_DATA_NAME, waitDialog, new RpcClient());
 	}
 }

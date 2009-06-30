@@ -52,17 +52,12 @@ public abstract class DataSource {
 	DataSource(String name, List<DataField> dataFields,
 			List<LinkField> linkFields, RecordParser parser,
 			PleaseWaitDialog waitDialog, RpcClient rpcClient) {
+		if (name == null || dataFields == null || linkFields == null) {
+			throw new IllegalArgumentException("Cannot pass in nulls");
+		}
 		m_name = name;
-		if (dataFields == null) {
-			m_dataFields = new ArrayList<DataField>();
-		} else {
-			m_dataFields = dataFields;
-		}
-		if (linkFields == null) {
-			m_linkFields = new ArrayList<LinkField>();
-		} else {
-			m_linkFields = linkFields;
-		}
+		m_dataFields = dataFields;
+		m_linkFields = linkFields;
 		m_recordParser = parser;
 		m_pleaseWaitDialog = waitDialog;
 		m_rpcClient = rpcClient;
@@ -155,7 +150,9 @@ public abstract class DataSource {
 		m_rpcClient.doPost(url, postBody, new RpcCallback() {
 			public void response(RpcResponse response) {
 				if (response.getResponseCode() != RpcResponse.STATUS_SUCCESS) {
-					callback.error("Error saving record", null);
+					callback.error("Error saving record: ("
+							+ response.getResponseCode() + ") "
+							+ response.getMessage(), null);
 				} else {
 					JSONArray data = response.getData();
 					if (data.size() == 0) {
@@ -172,8 +169,8 @@ public abstract class DataSource {
 							callback.error("Unreadable record", e);
 						}
 					}
-					m_pleaseWaitDialog.hide();
 				}
+				m_pleaseWaitDialog.hide();
 			}
 		});
 	}
@@ -186,7 +183,6 @@ public abstract class DataSource {
 		m_rpcClient.doGet(url, new RpcCallback() {
 			public void response(RpcResponse response) {
 				if (response.getResponseCode() != RpcResponse.STATUS_SUCCESS) {
-					callback.error("Error saving record", null);
 					callback.error("Error deleting record", null);
 				} else {
 					callback.success();

@@ -23,6 +23,9 @@ class RecordParser {
 
 	public RecordParser(String recordTitleKey, List<DataField> dataFields,
 			List<LinkField> linkFields) {
+		if (recordTitleKey == null || dataFields == null || linkFields == null) {
+			throw new IllegalArgumentException("Cannot pass in nulls");
+		}
 		m_dataFields = dataFields;
 		m_linkFields = linkFields;
 
@@ -53,7 +56,7 @@ class RecordParser {
 		List<Record> result = new ArrayList<Record>();
 		for (int i = 0; i < dataArray.size(); i++) {
 			final Record record = parseRecord(dataArray.get(i).isObject());
-			if (record == null) {
+			if (record != null) {
 				result.add(record);
 			}
 		}

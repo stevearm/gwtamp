@@ -26,7 +26,7 @@ public class RpcClient {
 					URL.encode(body.get(key))).append('&');
 		}
 		realBody.setLength(realBody.length() - 1);
-		doRequest(new RequestBuilder(RequestBuilder.GET, url), realBody
+		doRequest(new RequestBuilder(RequestBuilder.POST, url), realBody
 				.toString(), callback);
 	}
 
@@ -34,7 +34,7 @@ public class RpcClient {
 			final RpcCallback callback) {
 		final RequestCallback requestCallback = new RequestCallback() {
 			public void onError(Request request, Throwable exception) {
-				Log.debug(HTTP_ERROR_MESSAGE, exception);
+				Log.error(HTTP_ERROR_MESSAGE, exception);
 				callback.response(new RpcResponse(RpcResponse.STATUS_RPC_ERROR,
 						HTTP_ERROR_MESSAGE));
 			}
@@ -48,6 +48,8 @@ public class RpcClient {
 				RpcResponse rpcResponse = RpcResponseParser
 						.parseResponse(response.getText());
 				if (rpcResponse == null) {
+					Log.error("Unreadable response from server: "
+							+ response.getText());
 					rpcResponse = new RpcResponse(RpcResponse.STATUS_RPC_ERROR,
 							"Unreadable response from server");
 				}
@@ -61,6 +63,7 @@ public class RpcClient {
 		try {
 			builder.sendRequest(body, requestCallback);
 		} catch (final RequestException e) {
+			Log.error("Error sending RPC to server", e);
 			callback.response(new RpcResponse(RpcResponse.STATUS_RPC_ERROR,
 					HTTP_ERROR_MESSAGE));
 		}

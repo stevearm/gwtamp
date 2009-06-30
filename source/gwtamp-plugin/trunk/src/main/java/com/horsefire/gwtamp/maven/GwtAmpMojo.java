@@ -1,9 +1,6 @@
 package com.horsefire.gwtamp.maven;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -59,20 +56,6 @@ public class GwtAmpMojo extends AbstractMojo {
 	 * @parameter expression="${project.artifactId}"
 	 */
 	private String databaseTablePrefix;
-
-	/**
-	 * Gwt version. Just use a single property for this and your dependency
-	 * 
-	 * @parameter expression="${gwtHome}/gwt-${osName}-${gwt.version}"
-	 */
-	private File gwtHome;
-
-	/**
-	 * String for os: linux, mac, or windows
-	 * 
-	 * @parameter expression="${osName}"
-	 */
-	private String osName;
 
 	/**
 	 * The Maven Project Object
@@ -133,7 +116,6 @@ public class GwtAmpMojo extends AbstractMojo {
 		for (int i = 0; i < extraGwtModules.length; i++) {
 			allGwtModules[i + 1] = extraGwtModules[i];
 		}
-		runGwtCompile(allGwtModules);
 		new HtmlGenerator(artifactOutputDir, getLog()).run(allGwtModules);
 		new ServerSideFileCopier(artifactOutputDir).run();
 
@@ -158,58 +140,6 @@ public class GwtAmpMojo extends AbstractMojo {
 						+ dir);
 			}
 		}
-	}
-
-	private void runGwtCompile(String[] modules) throws MojoExecutionException {
-		if (!gwtHome.isDirectory()) {
-			throw new MojoExecutionException(
-					"Could not find GWT installed at: "
-							+ gwtHome.getAbsolutePath());
-		}
-		final String command = getGwtClasspath()
-				+ " com.google.gwt.dev.GWTCompiler -out "
-				+ artifactOutputDir.getAbsolutePath() + ' ';
-		final Runtime runtime = Runtime.getRuntime();
-		for (String module : modules) {
-			try {
-				final Process exec = runtime.exec(command + module);
-				final BufferedReader input = new BufferedReader(
-						new InputStreamReader(exec.getInputStream()));
-				String line = null;
-				while ((line = input.readLine()) != null) {
-					getLog().info("GWT-compile> " + line);
-				}
-				final int exitCode = exec.waitFor();
-				if (exitCode != 0) {
-					throw new MojoExecutionException(
-							"GWT compile failed with exit code " + exitCode);
-				}
-			} catch (IOException e) {
-				throw new MojoExecutionException(
-						"Exception running GWT compile command: '" + command
-								+ module + "'", e);
-			} catch (InterruptedException e) {
-				throw new MojoExecutionException(
-						"Exception running GWT compile command: '" + command
-								+ module + "'", e);
-			}
-		}
-	}
-
-	private String getGwtClasspath() throws MojoExecutionException {
-		final StringBuilder classpath = new StringBuilder(
-				"java -Xmx512m -classpath src/main/java")
-				.append(File.pathSeparatorChar);
-		classpath.append(new File(gwtHome, "gwt-user.jar").getAbsolutePath())
-				.append(File.pathSeparatorChar);
-		classpath.append(
-				new File(gwtHome, "gwt-dev-" + osName + ".jar")
-						.getAbsolutePath()).append(File.pathSeparatorChar);
-		for (String element : getRuntimeClasspathElements()) {
-			classpath.append(element).append(File.pathSeparatorChar);
-		}
-		classpath.deleteCharAt(classpath.length() - 1);
-		return classpath.toString();
 	}
 
 	@SuppressWarnings("unchecked")

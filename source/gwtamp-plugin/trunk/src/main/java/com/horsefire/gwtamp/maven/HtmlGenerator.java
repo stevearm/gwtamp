@@ -31,13 +31,13 @@ public class HtmlGenerator {
 	public void run(String[] gwtModules) throws MojoExecutionException,
 			MojoFailureException {
 
-		writeFile(pattern, gwtModules[0], "index");
+		writeFile(gwtModules[0], "index");
 		for (int i = 1; i < gwtModules.length; i++) {
-			writeFile(pattern, gwtModules[i], null);
+			writeFile(gwtModules[i], null);
 		}
 	}
 
-	private void writeFile(Pattern pattern, String module, String filename)
+	private void writeFile(String module, String filename)
 			throws MojoFailureException, MojoExecutionException {
 		String title = getLastName(module);
 		if (filename == null) {
@@ -50,7 +50,7 @@ public class HtmlGenerator {
 					+ ".html"));
 			String line = reader.readLine();
 			while (line != null) {
-				Matcher matcher = pattern.matcher(line);
+				Matcher matcher = m_pattern.matcher(line);
 				while (matcher.find()) {
 					if ("title".equals(matcher.group(1))) {
 						line = replaceMatch(line, matcher, title);
@@ -65,7 +65,7 @@ public class HtmlGenerator {
 										+ line);
 					}
 
-					matcher = pattern.matcher(line);
+					matcher = m_pattern.matcher(line);
 				}
 				writer.println(line);
 				line = reader.readLine();

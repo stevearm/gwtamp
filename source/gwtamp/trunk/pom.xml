@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.horsefire</groupId>
 	<artifactId>gwtamp</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>GwtAMP</name>
 	<description>A toolkit to easily bootstrap GWT applications running on a LAMP backend</description>
 	<url>http://code.google.com/p/gwtamp/</url>
 	<scm>
-		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</connection>
-		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</developerConnection>
-		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/trunk</url>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</url>
 	</scm>
 
 	<properties>

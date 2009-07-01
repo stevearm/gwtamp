@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.horsefire</groupId>
+	<artifactId>gwtamp</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.2</version>
+	<name>GwtAMP</name>
+	<description>A toolkit to easily bootstrap GWT applications running on a LAMP backend</description>
+	<url>http://code.google.com/p/gwtamp/</url>
+	<scm>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp/tags/gwtamp-0.0.2</url>
+	</scm>
+
+	<properties>
+		<junit.version>4.4</junit.version>
+		<easymock.version>2.5</easymock.version>
+		<gwt.version>1.5.3</gwt.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.zenika</groupId>
+			<artifactId>gwt-datepicker</artifactId>
+			<version>0.29</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.5</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!--
+			Make sure our GWT module definition(s) and Java source code are also
+			included in JAR
+		-->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+			</resource>
+		</resources>
+
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<version>1.8</version>
+			</extension>
+		</extensions>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.horsefire</groupId>
+				<artifactId>simple-gwt-plugin</artifactId>
+				<version>0.0.1</version>
+				<configuration>
+					<gwtTestSuites>
+						<param>com.horsefire.gwtamp.GwtTestSuite</param>
+					</gwtTestSuites>
+				</configuration>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>gwtamp-plugin-repo</id>
+			<name>GwtAMP repository</name>
+			<url>http://gwtamp.googlecode.com/svn/m2repo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>googlecode</id>
+			<url>svn:https://gwtamp.googlecode.com/svn/m2repo</url>
+		</repository>
+	</distributionManagement>
+
+</project>

@@ -3,14 +3,14 @@
 	<groupId>com.horsefire</groupId>
 	<artifactId>gwtamp-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>GwtAMP Plugin</name>
 	<description>The plugin that's needed to use GwtAMP</description>
 	<url>http://code.google.com/p/gwtamp/</url>
 	<scm>
-		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/trunk</connection>
-		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/trunk</developerConnection>
-		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/trunk</url>
+		<connection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/tags/gwtamp-plugin-0.0.2</connection>
+		<developerConnection>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/tags/gwtamp-plugin-0.0.2</developerConnection>
+		<url>scm:svn:https://gwtamp.googlecode.com/svn/source/gwtamp-plugin/tags/gwtamp-plugin-0.0.2</url>
 	</scm>
 
 	<properties>

@@ -8,8 +8,8 @@ class DBManager {
 	private $dbHandle; // The connection to the database
 
 	public function __construct() {
-		$this->dbHandle = mysql_connect('localhost', 'k9dbusers', 'iRh16Ieo') or die('DBManager::__construct() cannot open connection to server');
-		$dbSelected = mysql_select_db('dogdb', $this->dbHandle) or die('DBManager::__construct() cannot select proper database on server');
+		$this->dbHandle = mysql_connect(ServerConstants::$DB_HOST, ServerConstants::$DB_USER, ServerConstants::$DB_PASS) or die('DBManager::__construct() cannot open connection to server');
+		$dbSelected = mysql_select_db(ServerConstants::$DB_NAME, $this->dbHandle) or die('DBManager::__construct() cannot select proper database on server');
 	}
 
 	public function __destruct() {

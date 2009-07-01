@@ -7,8 +7,10 @@ package com.horsefire.gwtamp.server;
 public class FileList {
 
 	public static final String[] FILES = new String[] { "main.css",
-			"security.php", "includes/common.php", "includes/DBManager.php",
-			"includes/LocalConstants.php" };
+			"security.php", "includes/apiMain.php", "includes/common.php",
+			"includes/DBManager.php", "includes/GwtSharedConstants.php",
+			"includes/LocalConstants.php",
+			"includes/ServerConstants.sample.php" };
 
 	/**
 	 * Directories to create before copying files

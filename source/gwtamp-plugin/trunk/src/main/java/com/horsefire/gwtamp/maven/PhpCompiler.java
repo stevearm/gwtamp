@@ -67,23 +67,21 @@ public class PhpCompiler {
 					outputFile));
 
 			writer.println("<?php");
+			writer.println("include '../includes/ServerConstants.php';");
 			writer.println("include '../includes/LocalConstants.php';");
 			writer.println("include '../includes/DBManager.php';");
+			writer.println("include '../includes/GwtSharedConstants.php';");
 			writer.println("include '../includes/common.php';");
+			writer.println("include '../includes/apiMain.php';");
 
 			writer.println("function getDatabaseName() { return '" + dbName
 					+ "'; }");
-			writer.println("function getStringDataFields() {");
-			writer.println("  return array(" + renderFields(stringDataFields)
-					+ ");");
-			writer.println("}");
-			writer.println("function getNumberDataFields() {");
-			writer.println("  return array(" + renderFields(numberDataFields)
-					+ ");");
-			writer.println("}");
-			writer.println("function getLinkFields() {");
-			writer.println("  return array(" + renderFields(linkFields) + ");");
-			writer.println("}");
+			writer.println("function getStringDataFields() { return array("
+					+ renderFields(stringDataFields) + "); }");
+			writer.println("function getNumberDataFields() { return array("
+					+ renderFields(numberDataFields) + "); }");
+			writer.println("function getLinkFields() { return array("
+					+ renderFields(linkFields) + "); }");
 			writer.println("?>");
 
 			writer.close();

@@ -20,15 +20,16 @@ public class HtmlGenerator {
 
 	private final File m_outputDir;
 	private final Log m_log;
+	private final Pattern m_pattern;
 
 	public HtmlGenerator(File outputDir, Log log) {
 		m_outputDir = outputDir;
 		m_log = log;
+		m_pattern = Pattern.compile("\\$\\{([^\\}]+)\\}");
 	}
 
 	public void run(String[] gwtModules) throws MojoExecutionException,
 			MojoFailureException {
-		Pattern pattern = Pattern.compile("\\$\\{([^\\}]+)\\}");
 
 		writeFile(pattern, gwtModules[0], "index");
 		for (int i = 1; i < gwtModules.length; i++) {
@@ -56,7 +57,8 @@ public class HtmlGenerator {
 					} else if ("gwtModule".equals(matcher.group(1))) {
 						line = replaceMatch(line, matcher, module);
 					} else if ("rootPanelId".equals(matcher.group(1))) {
-						line = replaceMatch(line, matcher, GwtAmpRootPanel.DIV_ID);
+						line = replaceMatch(line, matcher,
+								GwtAmpRootPanel.DIV_ID);
 					} else {
 						throw new MojoExecutionException(
 								"Unknown variable in source index.html at line: "

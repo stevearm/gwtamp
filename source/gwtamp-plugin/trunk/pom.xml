@@ -14,7 +14,7 @@
 	</scm>
 
 	<properties>
-		<gwtamp.version>0.0.2-SNAPSHOT</gwtamp.version>
+		<gwtamp.version>0.0.2</gwtamp.version>
 		<gwt.version>1.5.3</gwt.version>
 	</properties>
 

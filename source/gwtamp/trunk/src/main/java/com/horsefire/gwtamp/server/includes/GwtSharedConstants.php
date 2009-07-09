@@ -11,5 +11,14 @@ class GwtSharedConstants {
 	public static $SESSION_USERNAME = 'username';
 	
 	public static $PARAM_API_OPERATIONTYPE = '_operationType';
+	
+	public static $LOGGER_KEY_LOG_TO_SERVER = 'logToServer';
+	public static $LOGGER_KEY_LOG_LEVEL = 'logLevel';
+	public static $LOGGER_LEVEL_TRACE = 'trace';
+	public static $LOGGER_LEVEL_DEBUG = 'debug';
+	public static $LOGGER_LEVEL_INFO = 'info';
+	public static $LOGGER_LEVEL_WARN = 'warn';
+	public static $LOGGER_LEVEL_ERROR = 'error';
+	public static $LOGGER_PARAM_MESSAGE = 'message';
 }
 ?>
